@@ -12,7 +12,9 @@ const TodoApp = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
 
-  // ✅ Fetch user tasks on load
+  // Fetch user tasks on load
+  // Use useEffect to fetch tasks when the component mounts or user changes
+
   useEffect(() => {
     if (user?.id && token) {
       fetch(`http://localhost:8080/user/tasks?userId=${user.id}`, {
@@ -27,15 +29,19 @@ const TodoApp = () => {
     }
   }, [user?.id, token]);
 
-  // ✅ Handle task submission
+  // Handle task submission
+  // Ensure user is authenticated before adding a task
   const handleAdd = async () => {
+    // Validate input fields
     if (!title || !desc || !dueDate) return;
 
     if (!user?.id || !token) {
+      // If user is not authenticated, show an alert
       alert("User not authenticated. Please log in.");
       return;
     }
 
+    // Prepare task payload
     const taskPayload = {
       title,
       description: desc,
@@ -67,6 +73,7 @@ const TodoApp = () => {
   };
 
   const goToDashboard = () => {
+    // Navigate to the tasks dashboard with the current tasks
     if (tasks.length > 0) {
       navigate('/tasks', { state: { tasks } });
     } else {
@@ -76,6 +83,7 @@ const TodoApp = () => {
 
   const lastTask = tasks[tasks.length - 1];
 
+  // Render the TodoApp component
   return (
     <div className="todo-container">
       <h2 className="todo-heading">📝 <span>To Do List</span></h2>
